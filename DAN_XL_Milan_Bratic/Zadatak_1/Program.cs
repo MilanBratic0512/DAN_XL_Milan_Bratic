@@ -20,20 +20,25 @@ namespace Zadatak_1
         static EventWaitHandle auto = new AutoResetEvent(true);
         static EventWaitHandle auto2 = new AutoResetEvent(true);
 
+        //computer names list
         static List<string> compNames = new List<string>();
+        /// <summary>
+        /// method for read color from the file
+        /// </summary>
         static void ReadColorFromTheFile()
         {
             string[] lines = File.ReadAllLines(path);
             colors = lines.ToList();
         }
+        /// <summary>
+        /// method for print request
+        /// </summary>
         static void Request(string format, string color, string orientation)
         {
+            //rotates loop until each computer is on the list
             while (compNames.Count < 10)
             {
-                if (compNames.Count == 10)
-                {
-                    return;
-                }
+                
                 Thread t = new Thread(() => Printer(format, color, orientation));
                 t.Name = Thread.CurrentThread.Name;
                 Thread.Sleep(100);
@@ -43,8 +48,12 @@ namespace Zadatak_1
                 t.Start();
             }
         }
+        /// <summary>
+        /// method for printing
+        /// </summary>
         static void Printer(string format, string color, string orientation)
         {
+            //depending on the format, thread entry
             if (format == "A3")
             {
                 auto.WaitOne();
@@ -67,6 +76,7 @@ namespace Zadatak_1
                 Console.WriteLine("The computer {0} user can pick up the document A4 format.", Thread.CurrentThread.Name);
                 auto2.Set();
             }
+            //if theres no computer in the list, add it
             if (!compNames.Contains(Thread.CurrentThread.Name))
             {
                 compNames.Add(Thread.CurrentThread.Name);
